@@ -1,26 +1,24 @@
-import type { AppInfo } from "../types";
+import sharpifyLogo from "../../src-tauri/icons/128x128.png";
 
 interface HeroProps {
-  appInfo: AppInfo | null;
-  summary: string;
   errorMessage: string | null;
 }
 
-export function Hero({ appInfo, summary, errorMessage }: HeroProps) {
+export function Hero({ errorMessage }: HeroProps) {
   return (
     <section className="hero">
-      <div>
-        <p className="eyebrow">Sharpify</p>
-        <h1>Batch image compression without leaving the desktop.</h1>
-        <p className="lede">
-          Drop files, set a few real options, and export optimized images to a folder you control.
-        </p>
+      <div className="hero-copy">
+        <img className="hero-logo" src={sharpifyLogo} alt="Sharpify" />
+        <div className="hero-heading">
+          <h1>Batch image compression</h1>
+          <p className="lede">Queue files, choose output settings, and export optimized images.</p>
+        </div>
       </div>
-      <div className="hero-card">
-        <span>{appInfo ? `${appInfo.platform} • ${appInfo.processorMode}` : "Loading runtime"}</span>
-        <strong>{summary}</strong>
-        {errorMessage ? <p className="error">{errorMessage}</p> : null}
-      </div>
+      {errorMessage ? (
+        <div className="hero-meta" aria-live="polite">
+          <p className="hero-status error">{errorMessage}</p>
+        </div>
+      ) : null}
     </section>
   );
 }

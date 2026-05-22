@@ -211,12 +211,14 @@ export function ControlsPanel({
       </div>
 
       <div className="control-actions">
-        <button type="button" onClick={() => void onProcess()} disabled={isProcessing || !hasFiles}>
-          Start Batch
-        </button>
-        <button type="button" className="secondary" onClick={() => void onCancel()} disabled={!isProcessing}>
-          Cancel
-        </button>
+        <div className="control-actions-row">
+          <button type="button" onClick={() => void onProcess()} disabled={isProcessing || !hasFiles}>
+            Start Batch
+          </button>
+          <button type="button" className="secondary" onClick={() => void onCancel()} disabled={!isProcessing}>
+            Cancel
+          </button>
+        </div>
         <button
           type="button"
           className="secondary"

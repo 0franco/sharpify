@@ -11,7 +11,6 @@ export default function App() {
     setOptions,
     isDragActive,
     isProcessing,
-    appInfo,
     summary,
     errorMessage,
     completedCount,
@@ -28,7 +27,7 @@ export default function App() {
 
   return (
     <main className="app-shell">
-      <Hero appInfo={appInfo} summary={summary} errorMessage={errorMessage} />
+      <Hero errorMessage={errorMessage} />
 
       <Dropzone
         isDragActive={isDragActive}
@@ -44,6 +43,7 @@ export default function App() {
           isProcessing={isProcessing}
           completedCount={completedCount}
           failedCount={failedCount}
+          summary={summary}
           onRemove={removeFile}
         />
 

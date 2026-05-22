@@ -78,6 +78,7 @@ struct AppInfo {
     platform: String,
     version: String,
     processor_mode: String,
+    default_output_directory: String,
 }
 
 fn runtime_root(app: &AppHandle) -> Result<PathBuf, String> {
@@ -151,10 +152,17 @@ fn parse_stdout(stdout: ChildStdout, app: AppHandle) -> Result<(), String> {
 #[tauri::command]
 fn get_app_info(app: AppHandle) -> Result<AppInfo, String> {
     let (_, processor_mode) = resolve_runtime(&app)?;
+    let default_output_directory = app
+        .path()
+        .download_dir()
+        .map(|path| path.to_string_lossy().into_owned())
+        .unwrap_or_default();
+
     Ok(AppInfo {
         platform: env::consts::OS.to_string(),
         version: app.package_info().version.to_string(),
         processor_mode,
+        default_output_directory,
     })
 }
 

@@ -35,7 +35,16 @@ export function useBatchProcessor() {
 
   useEffect(() => {
     void invoke<AppInfo>("get_app_info")
-      .then(setAppInfo)
+      .then((info) => {
+        setAppInfo(info);
+        if (info.defaultOutputDirectory) {
+          setOptions((current) =>
+            current.outputDirectory
+              ? current
+              : { ...current, outputDirectory: info.defaultOutputDirectory },
+          );
+        }
+      })
       .catch((error) => setErrorMessage(String(error)));
   }, []);
 

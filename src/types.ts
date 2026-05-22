@@ -54,4 +54,5 @@ export interface AppInfo {
   platform: string;
   version: string;
   processorMode: "bundled" | "system-node";
+  defaultOutputDirectory: string;
 }

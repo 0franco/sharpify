@@ -6,10 +6,11 @@ interface FileListProps {
   isProcessing: boolean;
   completedCount: number;
   failedCount: number;
+  summary: string;
   onRemove: (path: string) => void;
 }
 
-export function FileList({ files, isProcessing, completedCount, failedCount, onRemove }: FileListProps) {
+export function FileList({ files, isProcessing, completedCount, failedCount, summary, onRemove }: FileListProps) {
   return (
     <div className="panel queue-panel">
       <div className="panel-header">
@@ -54,6 +55,7 @@ export function FileList({ files, isProcessing, completedCount, failedCount, onR
           ))
         )}
       </div>
+      {summary ? <p className="queue-summary">{summary}</p> : null}
     </div>
   );
 }
