@@ -1,0 +1,39 @@
+{
+  "name": "sharpify",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Minimalist desktop image compression app powered by sharp.",
+  "type": "module",
+  "engines": {
+    "node": ">=24 <27"
+  },
+  "workspaces": [
+    "processor"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build:web": "tsc --noEmit && vite build",
+    "build:processor": "npm run build --workspace processor",
+    "prepare:runtime": "node scripts/prepare-runtime.mjs",
+    "build": "npm run build:processor && npm run prepare:runtime && npm run build:web",
+    "test:processor": "npm run test --workspace processor",
+    "test": "npm run test:processor && tsc --noEmit",
+    "tauri:dev": "tauri dev",
+    "tauri:build": "npm run build && tauri build"
+  },
+  "dependencies": {
+    "@tauri-apps/api": "^2.0.0",
+    "@tauri-apps/plugin-dialog": "^2.0.0",
+    "@tauri-apps/plugin-opener": "^2.0.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.0.0",
+    "@types/react": "^18.3.11",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.3",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.10"
+  }
+}

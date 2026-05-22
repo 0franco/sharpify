@@ -1,0 +1,36 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Sharpify",
+  "version": "0.1.0",
+  "identifier": "com.sharpify.app",
+  "build": {
+    "beforeDevCommand": "npm run build:processor && npm run prepare:runtime && npm run dev -- --host 0.0.0.0",
+    "beforeBuildCommand": "npm run build",
+    "devUrl": "http://localhost:1420",
+    "frontendDist": "../dist"
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "resources": [
+      "resources/runtime"
+    ],
+    "icon": []
+  },
+  "app": {
+    "windows": [
+      {
+        "label": "main",
+        "title": "Sharpify",
+        "width": 1320,
+        "height": 860,
+        "minWidth": 980,
+        "minHeight": 720,
+        "resizable": true
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  }
+}
