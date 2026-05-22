@@ -1,0 +1,115 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build-macos:
+    name: Build macOS (${{ matrix.arch }})
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: arm64
+            runner: macos-14
+          - arch: x64
+            runner: macos-13
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - run: npm ci
+      - run: npx tauri build --bundles app
+
+      - name: Collect release artifact
+        env:
+          RELEASE_VERSION: ${{ github.ref_name }}
+          ARCH: ${{ matrix.arch }}
+        run: |
+          set -euo pipefail
+          VERSION="${RELEASE_VERSION#v}"
+          APP_PATH="$(find src-tauri/target/release/bundle/macos -maxdepth 1 -name '*.app' -print -quit)"
+
+          if [ -z "${APP_PATH}" ]; then
+            echo "No app bundle found." >&2
+            exit 1
+          fi
+
+          mkdir -p release-assets metadata
+          OUTPUT_NAME="Sharpify_${VERSION}_macos_${ARCH}.zip"
+          ditto -c -k --keepParent "${APP_PATH}" "release-assets/${OUTPUT_NAME}"
+          shasum -a 256 "release-assets/${OUTPUT_NAME}" | awk '{print $1}' > "metadata/${ARCH}.sha256"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sharpify-${{ matrix.arch }}-release
+          path: release-assets/*
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: sharpify-${{ matrix.arch }}-metadata
+          path: metadata/*
+
+  publish-release:
+    name: Publish GitHub release
+    runs-on: ubuntu-latest
+    needs: build-macos
+
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: sharpify-*-release
+          merge-multiple: true
+          path: release-assets
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: release-assets/*
+          generate_release_notes: true
+
+  update-homebrew-tap:
+    name: Update Homebrew tap
+    runs-on: ubuntu-latest
+    needs: publish-release
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: sharpify-*-metadata
+          merge-multiple: true
+          path: metadata
+
+      - id: read-shas
+        run: |
+          echo "arm64=$(cat metadata/arm64.sha256)" >> "$GITHUB_OUTPUT"
+          echo "x64=$(cat metadata/x64.sha256)" >> "$GITHUB_OUTPUT"
+
+      - name: Update tap cask
+        run: node scripts/update-homebrew-cask.mjs
+        env:
+          RELEASE_VERSION: ${{ github.ref_name }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_REPOSITORY_OWNER: ${{ github.repository_owner }}
+          HOMEBREW_TAP_REPO: 0franco/homebrew-sharpify
+          HOMEBREW_TAP_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+          ARM64_SHA256: ${{ steps.read-shas.outputs.arm64 }}
+          X64_SHA256: ${{ steps.read-shas.outputs.x64 }}
