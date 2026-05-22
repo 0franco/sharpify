@@ -7,7 +7,12 @@ use std::{
     process::{Child, ChildStdout, Command, Stdio},
     sync::{Arc, Mutex},
 };
-use tauri::{AppHandle, Emitter, Manager, State};
+use tauri::{
+    image::Image,
+    menu::{Menu, MenuItem, PredefinedMenuItem},
+    tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent},
+    AppHandle, Emitter, Manager, State,
+};
 
 #[derive(Clone, Default)]
 struct ProcessorState {
@@ -270,6 +275,65 @@ pub fn run() {
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_opener::init())
         .manage(ProcessorState::default())
+        .setup(|app| {
+            let tray_icon = Image::from_bytes(include_bytes!("../icons/tray-icon.png"))?;
+
+            let menu = Menu::with_items(
+                app,
+                &[
+                    &MenuItem::with_id(app, "show", "Show Sharpify", true, None::<&str>)?,
+                    &PredefinedMenuItem::separator(app)?,
+                    &MenuItem::with_id(app, "quit", "Quit", true, None::<&str>)?,
+                ],
+            )?;
+
+            TrayIconBuilder::with_id("main")
+                .icon(tray_icon)
+                .tooltip("Sharpify")
+                .menu(&menu)
+                // On macOS, show_menu_on_left_click(false) keeps left-click free for
+                // the custom event handler; right-click shows the context menu.
+                .show_menu_on_left_click(false)
+                .on_menu_event(|app, event| match event.id().as_ref() {
+                    "show" => {
+                        if let Some(window) = app.get_webview_window("main") {
+                            let _ = window.unminimize();
+                            let _ = window.show();
+                            let _ = window.set_focus();
+                        }
+                    }
+                    "quit" => {
+                        app.exit(0);
+                    }
+                    _ => {}
+                })
+                .on_tray_icon_event(|tray, event| {
+                    if let TrayIconEvent::Click {
+                        button,
+                        button_state,
+                        ..
+                    } = event
+                    {
+                        if button == MouseButton::Left && button_state == MouseButtonState::Up {
+                            let app = tray.app_handle();
+                            if let Some(window) = app.get_webview_window("main") {
+                                let visible = window.is_visible().unwrap_or(false);
+                                let focused = window.is_focused().unwrap_or(false);
+                                if visible && focused {
+                                    let _ = window.hide();
+                                } else {
+                                    let _ = window.unminimize();
+                                    let _ = window.show();
+                                    let _ = window.set_focus();
+                                }
+                            }
+                        }
+                    }
+                })
+                .build(app)?;
+
+            Ok(())
+        })
         .invoke_handler(tauri::generate_handler![
             get_app_info,
             run_batch,

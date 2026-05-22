@@ -1,5 +1,7 @@
 # Sharpify
 
+![Sharpify Banner](.github/banner.webp)
+
 Sharpify is a minimalist desktop app for compressing images locally with `sharp`. The app uses a Tauri shell, a React frontend, and a bundled Node runtime that executes the Sharp processor offline.
 
 ## Features
