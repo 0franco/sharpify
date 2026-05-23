@@ -6,16 +6,50 @@ Sharpify is a minimalist desktop app for compressing images locally with `sharp`
 
 ## Install
 
-### Homebrew (macOS)
+### macOS — Homebrew
 
 ```bash
 brew tap 0franco/sharpify
 brew install --cask sharpify
 ```
 
-### Direct download
+### macOS — Direct download
 
-Grab the latest macOS release artifact from GitHub Releases.
+Grab the latest `.zip` from [GitHub Releases](https://github.com/0franco/sharpify/releases), unzip, and drag `Sharpify.app` to `/Applications`.
+
+### Linux — Direct download
+
+Grab the latest `.deb` or `.AppImage` from [GitHub Releases](https://github.com/0franco/sharpify/releases).
+
+```bash
+# Debian / Ubuntu
+sudo dpkg -i Sharpify_*_linux_x64.deb
+
+# Any distro (AppImage)
+chmod +x Sharpify_*_linux_x64.AppImage
+./Sharpify_*_linux_x64.AppImage
+```
+
+### Windows — Build from source
+
+Pre-built Windows binaries are not yet published. You can build locally:
+
+**Prerequisites**
+
+- [Node.js 20+](https://nodejs.org)
+- [Rust (stable)](https://rustup.rs)
+- [Microsoft C++ Build Tools](https://tauri.app/start/prerequisites/#windows)
+
+**Build**
+
+```bash
+git clone https://github.com/0franco/sharpify.git
+cd sharpify
+npm install
+npm run tauri:build
+```
+
+The installer will be in `src-tauri/target/release/bundle/nsis/` or `msi/`.
 
 ## Features
 
@@ -39,7 +73,10 @@ npm run test
 npm run build
 ```
 
-## Release automation
+## 🤝 Contributing
 
-- Pull requests run `npm run test` plus a macOS packaging build check.
-- Pushing a `v*` tag builds macOS release artifacts for Apple Silicon and Intel, publishes them to GitHub Releases, and updates the `0franco/homebrew-sharpify` tap cask.
+Contribute! Please open an issue or submit a pull request.
+
+<a href="https://www.buymeacoffee.com/travelingcode" target="_blank">
+  <img src="https://cdn.buymeacoffee.com/buttons/default-red.png" alt="Buy Me A Coffee" height="41" width="174" style="border-radius:10px">
+</a>
