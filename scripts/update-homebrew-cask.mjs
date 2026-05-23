@@ -13,7 +13,7 @@ function requireEnv(name) {
   return value;
 }
 
-const version = requireEnv("RELEASE_VERSION");
+const version = requireEnv("RELEASE_VERSION").replace(/^v/, "");
 const repoOwner = requireEnv("GITHUB_REPOSITORY_OWNER");
 const sourceRepo = requireEnv("GITHUB_REPOSITORY");
 const tapRepo = process.env.HOMEBREW_TAP_REPO || `${repoOwner}/homebrew-sharpify`;
