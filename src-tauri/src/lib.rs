@@ -83,9 +83,8 @@ struct AppInfo {
 
 fn runtime_root(app: &AppHandle) -> Result<PathBuf, String> {
     app.path()
-        .resource_dir()
+        .resolve("resources/runtime", tauri::path::BaseDirectory::Resource)
         .map_err(|error| error.to_string())
-        .map(|path| path.join("runtime"))
 }
 
 fn development_runtime_root() -> PathBuf {
