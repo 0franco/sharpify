@@ -13,6 +13,11 @@ brew tap 0franco/sharpify
 brew install --cask sharpify
 ```
 
+> **Note:** macOS may show _"Sharpify is damaged and can't be opened"_ because the app is not yet notarized. Run this once to clear the quarantine flag:
+> ```bash
+> xattr -cr /Applications/Sharpify.app
+> ```
+
 ### macOS — Direct download
 
 Grab the latest `.zip` from [GitHub Releases](https://github.com/0franco/sharpify/releases), unzip, and drag `Sharpify.app` to `/Applications`.
