@@ -56,6 +56,18 @@ npm run tauri:build
 
 The installer will be in `src-tauri/target/release/bundle/nsis/` or `msi/`.
 
+## Upgrade
+
+### macOS — Homebrew
+
+```bash
+brew update && brew upgrade --cask sharpify
+```
+
+### macOS / Linux — Direct download
+
+Download the latest release from [GitHub Releases](https://github.com/0franco/sharpify/releases) and replace the previous installation.
+
 ## Features
 
 - Drag and drop or select multiple image files
