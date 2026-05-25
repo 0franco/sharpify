@@ -75,6 +75,7 @@ export function useBatchProcessor() {
               originalBytes: payload.result.originalBytes,
               width: payload.result.width,
               height: payload.result.height,
+              outputPath: payload.result.outputPath,
               error: undefined,
             };
           }
@@ -213,6 +214,7 @@ export function useBatchProcessor() {
         error: undefined,
         outputBytes: undefined,
         savedPercent: undefined,
+        outputPath: undefined,
       })),
     );
     setIsProcessing(true);

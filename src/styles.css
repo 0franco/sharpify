@@ -248,6 +248,13 @@ label {
   gap: 0.35rem;
 }
 
+.file-actions {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
 .file-meta span,
 .empty-state,
 .error {

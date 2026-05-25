@@ -25,6 +25,7 @@ export interface QueueFile {
   height?: number;
   outputBytes?: number;
   savedPercent?: number;
+  outputPath?: string;
   error?: string;
 }
 

@@ -1,3 +1,4 @@
+import { openPath } from "@tauri-apps/plugin-opener";
 import { formatBytes, formatPercent } from "../lib/format";
 import type { QueueFile } from "../types";
 
@@ -42,6 +43,19 @@ export function FileList({ files, isProcessing, completedCount, failedCount, sum
               </div>
               <div className="file-actions">
                 {file.error ? <span className="error">{file.error}</span> : null}
+                {file.status === "done" && file.outputPath ? (
+                  <button
+                    type="button"
+                    className="secondary"
+                    onClick={() =>
+                      openPath(file.outputPath!).catch((error) => {
+                        console.error("Failed to open file:", error);
+                      })
+                    }
+                  >
+                    Open
+                  </button>
+                ) : null}
                 <button
                   type="button"
                   className="secondary"
